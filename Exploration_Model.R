@@ -2,7 +2,7 @@
 # Author: Matt Hixon
 # CIS 490: BIG DATA ANALYTICS
 
-setwd("/Users/matthixon/Documents/K-State/Fall 2016/CIS 490/Final Project/dataset")
+setwd("/Users/matthixon/Documents/K-State/Fall 2016/CIS 490/Final Project/dataset/NBA-Shot-Analysis")
 
 library(ggplot2)
 library(dplyr)
@@ -169,9 +169,9 @@ print(fit)
 varImpPlot(fit)
 
 # Random Model
-# OOB-Estimate -> 39.4%
-# Actual Error -> 39.25%
+# OOB-Estimate -> 39.38%
+# Actual Error -> 39.17%
 
-# Accuracy -> 60.75%
+# Accuracy -> 60.83%
 
 ### End of Model
