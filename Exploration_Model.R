@@ -134,6 +134,13 @@ plot <- ggplot(FGM_PERIOD_TIME_SUM,aes(x=PERIOD,y=(FGM/length(unique(shots$GAME_
   xlab("Period")+ylab("Average FG Attempts per Game")
 plot
 
+# Visualization 7: Factors that have high FGM and FG%
+merge1 <- aggregate(FGM ~ SHOT_CLOCK_PARTITION + SHOT_DIST_PARTITION + SHOT_TYPE + SHOT_QUALITY + GAME_CLOCK_PARTITION, shots, sum)
+merge2 <- aggregate(FGM ~ SHOT_CLOCK_PARTITION + SHOT_DIST_PARTITION + SHOT_TYPE + SHOT_QUALITY + GAME_CLOCK_PARTITION, shots, mean)
+total <- merge(merge1,merge2,by=c("SHOT_CLOCK_PARTITION","SHOT_DIST_PARTITION","SHOT_TYPE","SHOT_QUALITY","GAME_CLOCK_PARTITION"))
+total$SORT_FACTOR = total$FGM.x * total$FGM.y
+total[order(total$SORT_FACTOR, decreasing = TRUE),]
+
 # End of Exploration
 #######################
 # Model
@@ -149,13 +156,10 @@ test <- shots[-train_ind, ]
 ### Model: Random Forest
 
 # Data Preperation
-trainx <- data.frame(train$SHOT_CLOCK_PARTITION,train$SHOT_QUALITY,train$SHOT_TYPE,train$GAME_CLOCK_PARTITION,train$DRIBBLES,train$TOUCH_TIME)
+trainx <- data.frame(train$SHOT_CLOCK_PARTITION,train$SHOT_QUALITY,train$SHOT_TYPE,train$GAME_CLOCK_PARTITION,train$DRIBBLES,train$TOUCH_TIME,train$SHOT_DIST_PARTITION)
 trainy <- as.factor(train$FGM)
-testx <- data.frame(test$SHOT_CLOCK_PARTITION,test$SHOT_QUALITY,test$SHOT_TYPE,test$GAME_CLOCK_PARTITION,test$DRIBBLES,test$TOUCH_TIME)
+testx <- data.frame(test$SHOT_CLOCK_PARTITION,test$SHOT_QUALITY,test$SHOT_TYPE,test$GAME_CLOCK_PARTITION,test$DRIBBLES,test$TOUCH_TIME,test$SHOT_DIST_PARTITION)
 testy <- as.factor(test$FGM)
-
-# Tuning Variables
-tuneRF(trainx, trainy, stepFactor=0.1)
 
 # Train Model
 fit <- randomForest(x=trainx, y=trainy,xtest=testx,ytest=testy,
@@ -169,9 +173,9 @@ print(fit)
 varImpPlot(fit)
 
 # Random Model
-# OOB-Estimate -> 39.38%
-# Actual Error -> 39.17%
+# OOB-Estimate -> 38.38%
+# Actual Error -> 38.17%
 
-# Accuracy -> 60.83%
+# Accuracy -> 61.83%
 
 ### End of Model
